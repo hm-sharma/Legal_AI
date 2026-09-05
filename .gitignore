@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js build outputs
+.next/
+out/
+build/
+dist/
+
+# Python virtual environment & cache
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+
+# Database & Storage
+*.db
+*.sqlite
+backend/storage/uploads/*
+!backend/storage/uploads/.gitkeep
+backend/storage/samples/*
+!backend/storage/samples/.gitkeep
+
+# Environment variables & secrets
+.env
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# IDE & System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
