@@ -21,7 +21,21 @@ export const AnalysisSidebar: React.FC<AnalysisSidebarProps> = ({
 }) => {
   const [filterCategory, setFilterCategory] = useState<string>("ALL");
 
-  const rolesOptions = ["Service Provider", "Client / Buyer", "Disclosing Party", "Receiving Party"];
+  // Determine context-aware role options based on contract type
+  const getRolesForContractType = (type: string): string[] => {
+    const lower = type.toLowerCase();
+    if (lower.includes("lease") || lower.includes("rent")) {
+      return ["Tenant", "Landlord / Owner"];
+    } else if (lower.includes("nda") || lower.includes("confidential")) {
+      return ["Receiving Party", "Disclosing Party"];
+    } else if (lower.includes("employment") || lower.includes("consultant")) {
+      return ["Employee / Consultant", "Employer / Client"];
+    } else {
+      return ["Service Provider", "Client / Buyer"];
+    }
+  };
+
+  const rolesOptions = getRolesForContractType(auditData.contract_type);
 
   const getScoreColor = (score: number) => {
     if (score >= 70) return "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";

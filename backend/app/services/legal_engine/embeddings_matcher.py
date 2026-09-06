@@ -11,7 +11,7 @@ CUAD_RISK_ARCHETYPES = [
         "archetype": "Service provider shall indemnify, defend, and hold harmless client from any and all damages unbounded uncapped surviving perpetually",
         "base_severity": 0.96,
         "burdened_roles": ["Service Provider", "Receiving Party", "Employee", "Tenant"],
-        "beneficiary_roles": ["Client / Buyer", "Disclosing Party", "Employer", "Landlord"],
+        "beneficiary_roles": ["Client / Buyer", "Disclosing Party", "Employer", "Landlord / Owner"],
         "default_rationale": "Exposes party to consequential, punitive, and indirect damages without aggregate limitation.",
         "suggested_redline": "direct damages awarded by a court of competent jurisdiction, subject to Limitation of Liability cap"
     },
@@ -21,7 +21,7 @@ CUAD_RISK_ARCHETYPES = [
         "archetype": "Client shall pay invoices within ninety days and may withhold payment if client subjectively determines services do not meet satisfaction",
         "base_severity": 0.85,
         "burdened_roles": ["Service Provider", "Receiving Party", "Employee", "Tenant"],
-        "beneficiary_roles": ["Client / Buyer", "Disclosing Party", "Employer", "Landlord"],
+        "beneficiary_roles": ["Client / Buyer", "Disclosing Party", "Employer", "Landlord / Owner"],
         "default_rationale": "Extended payment window combined with subjective withholding rights strains operational cash flow.",
         "suggested_redline": "within thirty (30) days based on objective written acceptance criteria"
     },
@@ -31,7 +31,7 @@ CUAD_RISK_ARCHETYPES = [
         "archetype": "Client total aggregate liability shall be limited to five hundred dollars no liability cap applies to vendor",
         "base_severity": 0.92,
         "burdened_roles": ["Service Provider", "Receiving Party", "Employee", "Tenant"],
-        "beneficiary_roles": ["Client / Buyer", "Disclosing Party", "Employer", "Landlord"],
+        "beneficiary_roles": ["Client / Buyer", "Disclosing Party", "Employer", "Landlord / Owner"],
         "default_rationale": "Asymmetric liability cap virtually eliminates Client accountability while leaving Provider liabilities uncapped.",
         "suggested_redline": "LIMITED TO THE TOTAL FEES PAID IN THE 12 MONTHS PRECEDING THE CLAIM"
     },
@@ -41,7 +41,7 @@ CUAD_RISK_ARCHETYPES = [
         "archetype": "Irrevocably assigns all right title interest in deliverables work product including pre-existing background IP owned prior to contract",
         "base_severity": 0.95,
         "burdened_roles": ["Service Provider", "Receiving Party", "Employee", "Tenant"],
-        "beneficiary_roles": ["Client / Buyer", "Disclosing Party", "Employer", "Landlord"],
+        "beneficiary_roles": ["Client / Buyer", "Disclosing Party", "Employer", "Landlord / Owner"],
         "default_rationale": "Forfeits foundational software tools, pre-existing code libraries, and background trade secrets.",
         "suggested_redline": "excluding Service Provider's pre-existing Background IP, for which Service Provider grants a non-exclusive license"
     },
@@ -51,9 +51,39 @@ CUAD_RISK_ARCHETYPES = [
         "archetype": "Shall not directly or indirectly provide software development services for five years worldwide in technology sector",
         "base_severity": 0.88,
         "burdened_roles": ["Service Provider", "Receiving Party", "Employee", "Tenant"],
-        "beneficiary_roles": ["Client / Buyer", "Disclosing Party", "Employer", "Landlord"],
+        "beneficiary_roles": ["Client / Buyer", "Disclosing Party", "Employer", "Landlord / Owner"],
         "default_rationale": "Unreasonable multi-year duration and global geographic scope function as an illegal restraint on trade.",
         "suggested_redline": "for a period of twelve (12) months limited to direct named competitors in North America"
+    },
+    {
+        "clause_type": "Security Deposit & Forfeiture Terms",
+        "category": "Unilateral Burden",
+        "archetype": "Landlord may retain security deposit as non-refundable liquidated damages upon technical default without itemized accounting",
+        "base_severity": 0.90,
+        "burdened_roles": ["Tenant"],
+        "beneficiary_roles": ["Landlord / Owner"],
+        "default_rationale": "Unilateral forfeiture permits Landlord to retain security deposits arbitrarily without proving actual damages or repair costs.",
+        "suggested_redline": "Landlord shall return security deposit within 30 days of move-out along with an itemized receipt for actual necessary repairs"
+    },
+    {
+        "clause_type": "Property Maintenance & Structural Repair Duties",
+        "category": "Unilateral Burden",
+        "archetype": "Tenant shall be solely responsible for structural repairs HVAC maintenance plumbing fixes and roof repairs",
+        "base_severity": 0.89,
+        "burdened_roles": ["Tenant"],
+        "beneficiary_roles": ["Landlord / Owner"],
+        "default_rationale": "Shifts Landlord's foundational legal responsibility for structural and capital building maintenance onto the Tenant.",
+        "suggested_redline": "Tenant responsible for routine cleanliness; Landlord remains solely responsible for structural, HVAC, and roof repairs"
+    },
+    {
+        "clause_type": "Unilateral Entry & Short Eviction Notice",
+        "category": "Enforceability Issue",
+        "archetype": "Landlord may enter premises at any time without prior written notice and terminate lease upon twenty-four hours notice",
+        "base_severity": 0.94,
+        "burdened_roles": ["Tenant"],
+        "beneficiary_roles": ["Landlord / Owner"],
+        "default_rationale": "Violates Tenant's right to quiet enjoyment and statutory notice periods required prior to property entry or lease termination.",
+        "suggested_redline": "Landlord shall provide at least 24 hours advance written notice prior to entry; 30 days notice required for termination"
     }
 ]
 
@@ -117,16 +147,12 @@ class EmbeddingsMatcherService:
         if not best_match or highest_sim < 0.25:
             return None
 
-        # DYNAMIC TRANSFORMER HAZARD SCORE FORMULA
-        # 1. Base semantic hazard = Similarity * BaseSeverity * 100
         raw_hazard = min(99.0, max(15.0, highest_sim * best_match["base_severity"] * 120.0))
 
-        # 2. Party Perspective Conditioning Matrix
         if role in best_match["burdened_roles"]:
             dynamic_hazard = int(round(raw_hazard))
             impact = "Predatory" if dynamic_hazard >= 85 else "Unfavorable"
         else:
-            # Beneficiary party receives low hazard for favorable terms
             dynamic_hazard = max(10, int(round(raw_hazard * 0.22)))
             impact = "Favorable"
 

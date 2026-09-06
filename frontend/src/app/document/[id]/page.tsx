@@ -39,16 +39,21 @@ export default function DocumentAuditPage() {
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.message || "Failed to load document audit");
+        console.error("Document audit not found, returning to Home page:", err);
+        setError("Document session expired or not found. Redirecting to Home page...");
         setLoading(false);
+        // Auto-redirect to home page after brief pause
+        setTimeout(() => {
+          router.push("/");
+        }, 1500);
       });
-  }, [documentId]);
+  }, [documentId, router]);
 
   const handleRoleSwitch = async (newRole: string) => {
     if (!documentId || !auditData) return;
     setLoadingRole(true);
     try {
-      const updated = await reevaluateRole(documentId, newRole);
+      const updated = await reevaluateRole(documentId, newRole, auditData.contract_type);
       setAuditData(updated);
     } catch (err: any) {
       alert(err.message || "Failed to reevaluate perspective");
@@ -69,12 +74,12 @@ export default function DocumentAuditPage() {
   if (error || !auditData) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center bg-[#090D16] text-white p-6">
-        <p className="text-red-400 text-sm font-semibold mb-4">{error || "Document not found"}</p>
+        <p className="text-amber-400 text-sm font-semibold mb-4">{error || "Document not found. Redirecting to Home page..."}</p>
         <button
           onClick={() => router.push("/")}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 rounded-lg text-xs font-semibold hover:bg-blue-500 transition-colors"
         >
-          <ArrowLeft size={16} /> Return to Dashboard
+          <ArrowLeft size={16} /> Return to Home Dashboard Now
         </button>
       </div>
     );

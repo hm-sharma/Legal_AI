@@ -28,12 +28,12 @@ export default function RootLayout({
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-1.5 text-xs bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-full text-blue-400 font-medium">
-              <Sparkles size={14} />
-              <span>Gemini & SentenceTransformers Engine</span>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1.5 text-xs bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-full text-blue-400 font-medium">
+                <Sparkles size={14} />
+                <span>AI Contract Analysis Engine</span>
+              </div>
             </div>
-          </div>
         </header>
 
         {/* Main Content Area */}

@@ -61,7 +61,10 @@ class SampleContractInfo(BaseModel):
 class AnalyzeSampleRequest(BaseModel):
     sample_id: str
     role: str
+    contract_type: Optional[str] = None
 
 class ReevaluateRoleRequest(BaseModel):
     document_id: str
     role: str
+    contract_type: Optional[str] = None
+

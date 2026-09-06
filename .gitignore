@@ -33,6 +33,7 @@ backend/storage/samples/*
 .env.development.local
 .env.production.local
 .env.test.local
+backend/.env
 
 # IDE & System files
 .vscode/

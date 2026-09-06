@@ -8,10 +8,11 @@ export async function fetchSampleContracts(): Promise<SampleContractInfo[]> {
   return res.json();
 }
 
-export async function uploadDocument(file: File, role: string): Promise<DocumentAuditResponse> {
+export async function uploadDocument(file: File, role: string, contractType?: string): Promise<DocumentAuditResponse> {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("role", role);
+  if (contractType) formData.append("contract_type", contractType);
 
   const res = await fetch(`${API_BASE}/documents/upload`, {
     method: "POST",
@@ -21,21 +22,21 @@ export async function uploadDocument(file: File, role: string): Promise<Document
   return res.json();
 }
 
-export async function analyzeSampleContract(sampleId: string, role: string): Promise<DocumentAuditResponse> {
+export async function analyzeSampleContract(sampleId: string, role: string, contractType?: string): Promise<DocumentAuditResponse> {
   const res = await fetch(`${API_BASE}/documents/analyze-sample`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ sample_id: sampleId, role }),
+    body: JSON.stringify({ sample_id: sampleId, role, contract_type: contractType }),
   });
   if (!res.ok) throw new Error("Sample analysis failed");
   return res.json();
 }
 
-export async function reevaluateRole(documentId: string, role: string): Promise<DocumentAuditResponse> {
+export async function reevaluateRole(documentId: string, role: string, contractType?: string): Promise<DocumentAuditResponse> {
   const res = await fetch(`${API_BASE}/documents/reevaluate-role`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ document_id: documentId, role }),
+    body: JSON.stringify({ document_id: documentId, role, contract_type: contractType }),
   });
   if (!res.ok) throw new Error("Role re-evaluation failed");
   return res.json();
